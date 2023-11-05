@@ -7,7 +7,7 @@ app = FastAPI()
 models = Models()
 
 
-@app.post('/add_model')
+@app.post("/add_model")
 def add_model(request: AddModelRequest):
     """
     Добавляет новую модель с заданными гиперпараметрами.
@@ -22,8 +22,11 @@ def add_model(request: AddModelRequest):
         models.add_model(request.task, request.model_name, request.hyperparameters)
         return {"message": f"Модель {request.model_name} успешно добавлена"}
     except KeyError:
-        raise HTTPException(status_code=400, detail="Передана некорректная задача или некорректные гиперпараметры")
-    except Exception as e:  
+        raise HTTPException(
+            status_code=400,
+            detail="Передана некорректная задача или некорректные гиперпараметры",
+        )
+    except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -42,7 +45,10 @@ def train_model(request: TrainingRequest):
         models.train(request.task, request.model_name, request.data)
         return {"message": f"Модель {request.model_name} успешно обучена"}
     except KeyError:
-        raise HTTPException(status_code=400, detail="Модель не существует или передана некорректная задача")
+        raise HTTPException(
+            status_code=400,
+            detail="Модель не существует или передана некорректная задача",
+        )
 
 
 @app.post("/predict")
@@ -61,8 +67,11 @@ def predict_model(request: PredictionRequest):
         prediction = models.predict(request.task, request.model_name, request.data)
         return {"prediction": prediction}
     except KeyError:
-        raise HTTPException(status_code=400, detail="Модель не существует или передана некорректная задача")
-    except Exception as e:  
+        raise HTTPException(
+            status_code=400,
+            detail="Модель не существует или передана некорректная задача",
+        )
+    except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -81,18 +90,19 @@ def drop_model(request: DropModelRequest):
         models.drop_model(request.task, request.model_name)
         return {"message": f"Модель {request.model_name} успешно удалена"}
     except KeyError:
-        raise HTTPException(status_code=400, detail="Модель не cуществует или передана некорректная задача")
+        raise HTTPException(
+            status_code=400,
+            detail="Модель не cуществует или передана некорректная задача",
+        )
 
 
-
-@app.get('/models')
-@app.post('/models')
+@app.get("/models")
+@app.post("/models")
 def return_models():
     """
     Возвращает список и количество доступных моделей
     """
     return models.available_models()
-
 
 
 if __name__ == "__main__":
