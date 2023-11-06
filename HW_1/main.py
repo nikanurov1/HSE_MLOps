@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from models import Models
-from request import *
+from request import AddModelRequest, TrainingRequest, DropModelRequest, PredictionRequest
 import uvicorn
 
 app = FastAPI()

@@ -1,0 +1,375 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HW_1 Models",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/add_model": {
+      "post": {
+        "summary": "Add Model",
+        "description": "Добавляет новую модель с заданными гиперпараметрами.\n\nArgs:\n    request (AddModelRequest): Объект запроса содержащий информацию о модели и ее гиперпараметрах.\n\nReturns:\n    dict: Сообщение о успешном добавлении модели.",
+        "operationId": "add_model_add_model_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddModelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/train": {
+      "post": {
+        "summary": "Train Model",
+        "description": "Обучает указанную модель на предоставленных данных.\n\nArgs:\n    request (TrainingRequest): Объект запроса содержащий информацию о модели и данных для обучения.\n\nReturns:\n    dict: Сообщение о успешном обучении модели.",
+        "operationId": "train_model_train_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrainingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict": {
+      "get": {
+        "summary": "Predict Model",
+        "description": "Возвращает предсказания для предоставленных данных на основе обученной модели.\n\nArgs:\n    request (PredictionRequest): Объект запроса содержащий информацию о модели и данных для предсказания.\n\nReturns:\n    dict: Содержит предсказанные значения.",
+        "operationId": "predict_model_predict_get",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PredictionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Predict Model",
+        "description": "Возвращает предсказания для предоставленных данных на основе обученной модели.\n\nArgs:\n    request (PredictionRequest): Объект запроса содержащий информацию о модели и данных для предсказания.\n\nReturns:\n    dict: Содержит предсказанные значения.",
+        "operationId": "predict_model_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PredictionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drop_model": {
+      "post": {
+        "summary": "Drop Model",
+        "description": "Удаляет указанную модель.\n\nArgs:\n    request (DropModelRequest): Объект запроса содержащий информацию о модели для удаления.\n\nReturns:\n    dict: Сообщение о успешном удалении модели.",
+        "operationId": "drop_model_drop_model_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DropModelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models": {
+      "get": {
+        "summary": "Return Models",
+        "description": "Возвращает список и количество доступных моделей",
+        "operationId": "return_models_models_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Return Models",
+        "description": "Возвращает список и количество доступных моделей",
+        "operationId": "return_models_models_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddModelRequest": {
+        "properties": {
+          "task": {
+            "type": "string",
+            "title": "Task"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          },
+          "hyperparameters": {
+            "type": "object",
+            "title": "Hyperparameters"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task",
+          "model_name",
+          "hyperparameters"
+        ],
+        "title": "AddModelRequest"
+      },
+      "DropModelRequest": {
+        "properties": {
+          "task": {
+            "type": "string",
+            "title": "Task"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task",
+          "model_name"
+        ],
+        "title": "DropModelRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PredictionRequest": {
+        "properties": {
+          "task": {
+            "type": "string",
+            "title": "Task"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          },
+          "data": {
+            "type": "object",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task",
+          "model_name",
+          "data"
+        ],
+        "title": "PredictionRequest"
+      },
+      "TrainingRequest": {
+        "properties": {
+          "task": {
+            "type": "string",
+            "title": "Task"
+          },
+          "model_name": {
+            "type": "string",
+            "title": "Model Name"
+          },
+          "data": {
+            "type": "object",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task",
+          "model_name",
+          "data"
+        ],
+        "title": "TrainingRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

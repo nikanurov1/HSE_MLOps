@@ -12,9 +12,10 @@ class Models:
 
     def available_models(self) -> dict:
         """
-        Данный метод возвращает количество моделей и их количество для каждого классса
+        Данный метод возвращает количество моделей и их количество для каждого класса
 
         Returns:
+            dict: словарь с доступными
         """
         return {
             "regression": {
@@ -48,20 +49,26 @@ class Models:
             None
         """
         if model_name in self.models[task]["models"].keys():
-            raise Exception(
+            raise ValueError(
                 "Модель с таким именем существует - добавьте модель с другим именем или удалите уже существующую"
             )
         if task == "regression":
-            self.models[task]["models"][model_name] = {
-                "model": LinearRegression(**hypeparams),
-                "is trained": False,
-            }
+            try:
+                self.models[task]["models"][model_name] = {
+                    "model": LinearRegression(**hypeparams),
+                    "is trained": False,
+                }
+            except TypeError:
+                raise ValueError('Введите корректные гипарпараметры для модели регрессии')
             self.models[task]["cnt"] += 1
         else:
-            self.models[task]["models"][model_name] = {
-                "model": LogisticRegression(**hypeparams),
-                "is trained": False,
-            }
+            try:
+                self.models[task]["models"][model_name] = {
+                    "model": LogisticRegression(**hypeparams),
+                    "is trained": False
+                }
+            except TypeError:
+                raise ValueError('Введите корректные гипарпараметры для модели классификации')
             self.models[task]["cnt"] += 1
 
     def prepare_data(
@@ -77,16 +84,15 @@ class Models:
                 - 'predict': Вернет данные в виде DataFrame.
 
         Returns:
-            - pd.DataFrame: Если mod установлен в 'predict'.
-            - tuple: Если mod установлен в 'train'. Возвращает кортеж из признаков (X) и целевой переменной (y).
+            pd.DataFrame: Если mod установлен в 'predict'.
+            tuple: Если mod установлен в 'train'. Возвращает кортеж из признаков (X) и целевой переменной (y).
         """
+        df = pd.DataFrame(data)
         if mod == "predict":
-            return pd.DataFrame(data)
-        else:
-            self.data = pd.DataFrame(data)
-            X = self.data.iloc[:, :-1]
-            y = self.data.iloc[:, -1]
-            return X, y
+            return df
+        X = df.iloc[:, :-1]
+        y = df.iloc[:, -1]
+        return X, y
 
     def train(
         self, task: Literal["classification", "regression"], model_name: str, data: dict
@@ -102,19 +108,17 @@ class Models:
         Raises:
             KeyError: Если указанное имя модели или тип задачи отсутствует в словаре self.models.
 
-        Side Effects:
-            - Обновляет состояние модели в словаре self.models.
-            - Выводит информацию о словаре self.models после обучения.
-
         Returns:
             None
         """
-        _X, _y = self.prepare_data(
+        X, y = self.prepare_data(
             data,
         )
-        train_model = self.models[task]["models"][model_name]
-        train_model["model"].fit(_X, _y)
-        train_model["is trained"] = True
+        model_data = self.models[task]["models"].get(model_name)
+        if not model_data:
+            raise KeyError(f"Модель с именем '{model_name}' не найдена для задачи '{task.value}'")
+        model_data["model"].fit(X, y)
+        model_data["is trained"] = True
 
     def predict(
         self, task: Literal["classification", "regression"], model_name: str, data: dict
@@ -134,12 +138,13 @@ class Models:
         Returns:
             list: Список предсказанных значений.
         """
-        _X = self.prepare_data(data, mod="predict")
-        pred_model = self.models[task]["models"][model_name]
-        if pred_model["is trained"]:
-            return pred_model["model"].predict(_X).tolist()
-        else:
-            raise Exception("Model has not been trained yet :(")
+        X = self.prepare_data(data, mod="predict")
+        model_data = self.models[task]["models"].get(model_name)
+        if not model_data:
+            raise KeyError(f"Модель с именем '{model_name}' не найдена для задачи '{task.value}'")
+        if not model_data["is trained"]:
+            raise Exception("Модель еще не обучена :(")
+        return model_data["model"].predict(X).tolist()
 
     def drop_model(
         self, task: Literal["classification", "regression"], model_name: str
@@ -158,5 +163,8 @@ class Models:
         Returns:
             None
         """
-        del self.models[task]["models"][model_name]
-        self.models[task]["cnt"] -= 1
+        if model_name in self.models[task]["models"]:
+            del self.models[task]["models"][model_name]
+            self.models[task]["cnt"] -= 1
+        else:
+            raise KeyError(f"Модель с именем '{model_name}' не найдена для задачи '{task.value}'")
