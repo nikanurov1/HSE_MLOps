@@ -1,2 +1,8 @@
 
 .DS_Store
+mlops_venv_new/
+new_mlops_venv/
+hw-mlops/
+.minio.sys
+__pycache__
+

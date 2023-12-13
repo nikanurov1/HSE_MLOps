@@ -1,7 +1,9 @@
 from fastapi import FastAPI, HTTPException
-from models import Models
-from request import AddModelRequest, TrainingRequest, DropModelRequest, PredictionRequest
+from src.models_factory import Models
+from src.schemas import AddModelRequest, TrainingRequest, DropModelRequest, PredictionRequest
 import uvicorn
+import boto3
+from dvc.api import get_url
 
 app = FastAPI()
 models = Models()

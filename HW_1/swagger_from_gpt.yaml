@@ -1,0 +1,200 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: HW_1 Models API
+  description: API для обучения моделей и предиктов
+
+paths:
+  /add_model:
+    post:
+      summary: Add a new model
+      description: Добавляет новую модель с заданными гиперпараметрами.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddModelRequest'
+      responses:
+        200:
+          description: Модель успешно добавлена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        400:
+          description: Error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+
+  /train:
+    post:
+      summary: Train a specific model
+      description: Обучает указанную модель на предоставленных данных.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrainingRequest'
+      responses:
+        200:
+          description: Модель успешно обучена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        400:
+          description: Error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+
+  /predict:
+    post:
+      summary: Predict using a specific model
+      description: Возвращает предсказания для предоставленных данных на основе обученной модели.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredictionRequest'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prediction:
+                    type: array
+                    items:
+                      type: string
+        400:
+          description: Error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+
+  /drop_model:
+    post:
+      summary: Drop a specific model
+      description: Удаляет указанную модель.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DropModelRequest'
+      responses:
+        200:
+          description: Модель успешно удалена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        400:
+          description: Error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+
+  /models:
+    get:
+      summary: Get available models
+      description: Возвращает список и количество доступных моделей.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  available_models:
+                    type: array
+                    items:
+                      type: string
+
+components:
+  schemas:
+    AddModelRequest:
+      type: object
+      properties:
+        task:
+          type: string
+        model_name:
+          type: string
+        hyperparameters:
+          type: object
+      required:
+        - task
+        - model_name
+        - hyperparameters
+
+    TrainingRequest:
+      type: object
+      properties:
+        task:
+          type: string
+        model_name:
+          type: string
+        data:
+          type: object
+      required:
+        - task
+        - model_name
+        - data
+
+    PredictionRequest:
+      type: object
+      properties:
+        task:
+          type: string
+        model_name:
+          type: string
+        data:
+          type: object
+      required:
+        - task
+        - model_name
+        - data
+
+    DropModelRequest:
+      type: object
+      properties:
+        task:
+          type: string
+        model_name:
+          type: string
+      required:
+        - task
+        - model_name

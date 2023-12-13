@@ -1,11 +1,26 @@
 import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from typing import Literal, Tuple, Union
+from utils import push_file_to_dvc
+import pickle
+import boto3
+
+s3_client = boto3.client('s3',
+                        endpoint_url='http://127.0.0.1:9000',
+                        aws_access_key_id='9WAUcqwOibQuf0vgm9m0',
+                        aws_secret_access_key='81FmjNY9DUVZzNRNJWSOsUKr9N94t5fKm7GwBCFJ')
+
+key = f"models.pkl"
 
 
 class Models:
     def __init__(self):
-        self.models = {
+        try:
+            response = s3_client.get_object(Bucket='hw-mlops', Key=key)
+            pickle_data = response['Body'].read()
+            self.models = pickle.loads(pickle_data)
+        except:
+            self.models = {
             "regression": {"models": {}, "cnt": 0},
             "classification": {"models": {}, "cnt": 0},
         }
@@ -70,9 +85,14 @@ class Models:
             except TypeError:
                 raise ValueError('Введите корректные гипарпараметры для модели классификации')
             self.models[task]["cnt"] += 1
+        
+        pickle_data = pickle.dumps(self.models)
+        s3_client.put_object(Body=pickle_data, Bucket='hw-mlops', Key=key) 
+
+
 
     def prepare_data(
-        self, data: dict, mod: Literal["train", "predict"] = "train"
+        self, data: dict, mode: Literal["train", "predict"] = "train"
     ) -> Union[pd.DataFrame, Tuple[pd.DataFrame, pd.DataFrame]]:
         """
         Подготавливает входные данные в соответствии с указанным режимом.
@@ -88,14 +108,14 @@ class Models:
             tuple: Если mod установлен в 'train'. Возвращает кортеж из признаков (X) и целевой переменной (y).
         """
         df = pd.DataFrame(data)
-        if mod == "predict":
+        if mode == "predict":
             return df
         X = df.iloc[:, :-1]
         y = df.iloc[:, -1]
         return X, y
 
     def train(
-        self, task: Literal["classification", "regression"], model_name: str, data: dict
+        self, task: Literal["classification", "regression"], model_name: str, data: dict, data_name: str
     ) -> None:
         """
         Обучает указанную модель на предоставленных данных.
@@ -119,6 +139,10 @@ class Models:
             raise KeyError(f"Модель с именем '{model_name}' не найдена для задачи '{task.value}'")
         model_data["model"].fit(X, y)
         model_data["is trained"] = True
+
+        pickle_data = pickle.dumps(self.models)
+        s3_client.put_object(Body=pickle_data, Bucket='hw-mlops', Key=key) 
+        push_file_to_dvc(data, data_name)
 
     def predict(
         self, task: Literal["classification", "regression"], model_name: str, data: dict
@@ -168,3 +192,6 @@ class Models:
             self.models[task]["cnt"] -= 1
         else:
             raise KeyError(f"Модель с именем '{model_name}' не найдена для задачи '{task.value}'")
+        
+        pickle_data = pickle.dumps(self.models)
+        s3_client.put_object(Body=pickle_data, Bucket='hw-mlops', Key=key)

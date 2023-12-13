@@ -11,6 +11,7 @@ class TrainingRequest(BaseModel):
     task: str
     model_name: str
     data: dict
+    data_name: str
 
 
 class PredictionRequest(BaseModel):
